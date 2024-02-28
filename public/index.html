@@ -29,7 +29,7 @@
     const HOST = 'https://simpletalkai.com/node-oauth-demo'
     const oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
     const clientId = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com'
-    const redirectUri = `${HOST}/oauth/redirectgoogle`
+    const redirectUri = `${HOST}/oauth/redirect-google`
     const scope = 'https://www.googleapis.com/auth/drive.metadata.readonly';
 
     location.href = `${oauth2Endpoint}?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&include_granted_scopes=true&state=`;

@@ -61,7 +61,7 @@ const oauthGoogle = async ctx => {
   const clientId = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com'
   const clientSecret = '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';
   const HOST = 'https://simpletalkai.com/node-oauth-demo'
-  const redirectUri = `${HOST}/oauth/redirectgoogle`
+  const redirectUri = `${HOST}/oauth/redirect-google`
 
   const oauth2Client = new google.auth.OAuth2(
       clientId,
@@ -137,7 +137,7 @@ const oauthGoogle = async ctx => {
 
 app.use(main);
 app.use(route.get('/oauth/redirect', oauth));
-app.use(route.get('/oauth/redirectgoogle', oauthGoogle));
+app.use(route.get('/oauth/redirect-google', oauthGoogle));
 
 const proxy = new Koa();
 proxy.use(mount('/node-oauth-demo', app));
