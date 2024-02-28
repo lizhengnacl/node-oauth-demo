@@ -1,8 +1,8 @@
-// Fill in your client ID and client secret that you obtained
-// while registering the application
-const clientID = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com';
+
+const clientId = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com'
 const clientSecret = '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';
-const redirectUri = 'https://simpletalkai.com/google_oauth_demo/oauth/redirect'
+const HOST = 'https://simpletalkai.com/node-oauth-demo'
+const redirectUri = `${HOST}/oauth/redirect`
 
 const Koa = require('koa');
 const path = require('path');
@@ -16,18 +16,18 @@ const colors = require('./util/colors');
 const app = new Koa();
 const main = serve(path.join(__dirname + '/public'));
 
-const HOST = 'https://simpletalkai.com/node-oauth-demo'
 
 const oauth2Client = new google.auth.OAuth2(
-    '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com',
-    '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',
-    `${HOST}/oauth/redirect`
+    clientId,
+    clientSecret,
+    redirectUri
 );
 
 const oauth = async ctx => {
   const code = ctx.request.query.code;
   console.log(colors.green(`authorization code: ${code}`));
 
+  // '=========== 使用API ==========='
   // const tokenResponse = await axios({
   //   method: 'post',
   //   url: 'https://oauth2.googleapis.com/token?' +
@@ -63,11 +63,13 @@ const oauth = async ctx => {
   // ctx.response.redirect(`${HOST}/welcome.html?name=${name}&id=${id}`);
 
 
+  // '=========== 使用SDK ==========='
+  // code to token
   let { tokens } = await oauth2Client.getToken(code);
   oauth2Client.setCredentials(tokens);
-  console.log('=========== tokens ===========', tokens);
   let {access_token, scope, token_type, expiry_date} = tokens;
 
+  // 使用token，以Google云盘为例，其它参考文档
   const drive = google.drive('v3');
   drive.files.list({
     auth: oauth2Client,
@@ -92,6 +94,7 @@ const oauth = async ctx => {
 app.use(main);
 app.use(route.get('/oauth/redirect', oauth));
 
+// 反向代理
 const proxy = new Koa();
 proxy.use(mount('/node-oauth-demo', app));
 proxy.listen(8881, () => {
