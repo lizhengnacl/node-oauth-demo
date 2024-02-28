@@ -8,11 +8,13 @@ const path = require('path');
 const serve = require('koa-static');
 const route = require('koa-route');
 const axios = require('axios');
+const mount = require('koa-mount');
 const colors = require('./util/colors');
 
 const app = new Koa();
-
 const main = serve(path.join(__dirname + '/public'));
+
+const HOST = 'http://localhost:8881/node-oauth-demo'
 
 const oauth = async ctx => {
   const requestToken = ctx.request.query.code;
@@ -47,11 +49,14 @@ const oauth = async ctx => {
   ctx.cookies.set('token', accessToken, {
     httpOnly: true,
   });
-  ctx.response.redirect(`/welcome.html?name=${name}&id=${id}`);
+  ctx.response.redirect(`${HOST}/welcome.html?name=${name}&id=${id}`);
 };
 
 app.use(main);
 app.use(route.get('/oauth/redirect', oauth));
 
-app.listen(8881);
-console.log('=========== 8881 ===========');
+const proxy = new Koa();
+proxy.use(mount('/node-oauth-demo', app));
+proxy.listen(8881, () => {
+  console.log('Server is running on http://localhost:8881/node-oauth-demo');
+});

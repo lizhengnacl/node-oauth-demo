@@ -14,9 +14,10 @@
 <script>
   // fill in your cliend_id
   const client_id = '240beeadb32b08f2fcb5';
+  const HOST = 'http://localhost:8881/node-oauth-demo'
 
   const authorize_uri = 'https://github.com/login/oauth/authorize';
-  const redirect_uri = 'https://simpletalkai.com/node-oauth-demo/oauth/redirect';
+  const redirect_uri = `${HOST}/oauth/redirect`;
 
   const link = document.getElementById('login');
   // github scope
