@@ -123,18 +123,19 @@ const oauthGoogle = async ctx => {
     fields: 'nextPageToken, files(id, name)',
   }));
   if (err) {
-    return console.log('The API returned an error: ' + err);
-  }
-  const files = res.data.files;
-  if (files.length) {
-    console.log('Files:');
-    files.map((file) => {
-      console.log(`${file.name} (${file.id})`);
-    });
-  } else {
-    console.log('No files found.');
-  }
+    console.log('The API returned an error: ' + err);
+  }else{
+    const files = res.data.files;
+    if (files.length) {
+      console.log('Files:');
+      files.map((file) => {
+        console.log(`${file.name} (${file.id})`);
+      });
+    } else {
+      console.log('No files found.');
+    }
 
+  }
   ctx.response.redirect(
       `${HOST}/welcome.html?from=google&access_token=${access_token}&scope=${scope}&token_type=${token_type}&expiry_date=${expiry_date}`);
 };
