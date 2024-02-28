@@ -67,6 +67,10 @@ const oauth = async ctx => {
   oauth2Client.setCredentials(tokens);
   console.log('=========== tokens ===========', tokens);
   let {access_token, scope, token_type, expiry_date} = tokens;
+
+  const userInfo = await oauth2.userinfo.get();
+  console.log(userInfo.data);
+
   ctx.response.redirect(`${HOST}/welcome.html?access_token=${access_token}&scope=${scope}&token_type=${token_type}&expiry_date=${expiry_date}`);
 };
 
