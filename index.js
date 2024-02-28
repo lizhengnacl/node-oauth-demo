@@ -114,23 +114,33 @@ const oauthGoogle = async ctx => {
   let {access_token, scope, token_type, expiry_date} = tokens;
 
   // 使用token，以Google云盘为例，其它参考文档
-  const drive = google.drive('v3');
-  drive.files.list({
-    auth: oauth2Client,
-    pageSize: 10,
-    fields: 'nextPageToken, files(id, name)',
-  }, (err1, res1) => {
-    if (err1) return console.log('The API returned an error: ' + err1);
-    const files = res1.data.files;
-    if (files.length) {
-      console.log('Files:');
-      files.map((file) => {
-        console.log(`${file.name} (${file.id})`);
-      });
-    } else {
-      console.log('No files found.');
-    }
-  });
+  // const drive = google.drive('v3');
+  // drive.files.list({
+  //   auth: oauth2Client,
+  //   pageSize: 10,
+  //   fields: 'nextPageToken, files(id, name)',
+  // }, (err1, res1) => {
+  //   if (err1) return console.log('The API returned an error: ' + err1);
+  //   const files = res1.data.files;
+  //   if (files.length) {
+  //     console.log('Files:');
+  //     files.map((file) => {
+  //       console.log(`${file.name} (${file.id})`);
+  //     });
+  //   } else {
+  //     console.log('No files found.');
+  //   }
+  // });
+
+  if (oauth2Client.isSignedIn.get()) {
+    var profile = oauth2Client.currentUser.get().getBasicProfile();
+    console.log('ID: ' + profile.getId());
+    console.log('Full Name: ' + profile.getName());
+    console.log('Given Name: ' + profile.getGivenName());
+    console.log('Family Name: ' + profile.getFamilyName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail());
+  }
 
   ctx.response.redirect(`${HOST}/welcome.html?from=google&access_token=${access_token}&scope=${scope}&token_type=${token_type}&expiry_date=${expiry_date}`);
 };
