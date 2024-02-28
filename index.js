@@ -1,26 +1,27 @@
 // Fill in your client ID and client secret that you obtained
 // while registering the application
 
-
 const Koa = require('koa');
 const path = require('path');
 const serve = require('koa-static');
 const route = require('koa-route');
 const axios = require('axios');
 const mount = require('koa-mount');
-const { google } = require('googleapis');
+const {google} = require('googleapis');
 const colors = require('./util/colors');
 
+function to(promise) {
+  return promise.then(res => [null, res]).catch(err => [err, null]);
+}
 
 const app = new Koa();
 const main = serve(path.join(__dirname + '/public'));
 
-const HOST = 'https://simpletalkai.com/node-oauth-demo'
+const HOST = 'https://simpletalkai.com/node-oauth-demo';
 
 const oauth = async ctx => {
   const clientID = '240beeadb32b08f2fcb5';
   const clientSecret = '9a9109e86e054ba1698c9bf9fd61db89a0dd9e33';
-
 
   const requestToken = ctx.request.query.code;
   console.log(colors.red(`authorization code: ${requestToken}`));
@@ -54,19 +55,20 @@ const oauth = async ctx => {
   ctx.cookies.set('token', accessToken, {
     httpOnly: true,
   });
-  ctx.response.redirect(`${HOST}/welcome.html?from=github&name=${name}&id=${id}`);
+  ctx.response.redirect(
+      `${HOST}/welcome.html?from=github&name=${name}&id=${id}`);
 };
 
 const oauthGoogle = async ctx => {
-  const clientId = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com'
+  const clientId = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com';
   const clientSecret = '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';
-  const HOST = 'https://simpletalkai.com/node-oauth-demo'
-  const redirectUri = `${HOST}/oauth/redirect-google`
+  const HOST = 'https://simpletalkai.com/node-oauth-demo';
+  const redirectUri = `${HOST}/oauth/redirect-google`;
 
   const oauth2Client = new google.auth.OAuth2(
       clientId,
       clientSecret,
-      redirectUri
+      redirectUri,
   );
 
   const code = ctx.request.query.code;
@@ -109,40 +111,32 @@ const oauthGoogle = async ctx => {
 
   // '=========== 使用SDK ==========='
   // code to token
-  let { tokens } = await oauth2Client.getToken(code);
+  let {tokens} = await oauth2Client.getToken(code);
   oauth2Client.setCredentials(tokens);
   let {access_token, scope, token_type, expiry_date} = tokens;
 
   // 使用token，以Google云盘为例，其它参考文档
-  // const drive = google.drive('v3');
-  // drive.files.list({
-  //   auth: oauth2Client,
-  //   pageSize: 10,
-  //   fields: 'nextPageToken, files(id, name)',
-  // }, (err1, res1) => {
-  //   if (err1) return console.log('The API returned an error: ' + err1);
-  //   const files = res1.data.files;
-  //   if (files.length) {
-  //     console.log('Files:');
-  //     files.map((file) => {
-  //       console.log(`${file.name} (${file.id})`);
-  //     });
-  //   } else {
-  //     console.log('No files found.');
-  //   }
-  // });
-
-  if (oauth2Client.isSignedIn.get()) {
-    var profile = oauth2Client.currentUser.get().getBasicProfile();
-    console.log('ID: ' + profile.getId());
-    console.log('Full Name: ' + profile.getName());
-    console.log('Given Name: ' + profile.getGivenName());
-    console.log('Family Name: ' + profile.getFamilyName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail());
+  const drive = google.drive('v3');
+  let [err, res] = await to(drive.files.list({
+    auth: oauth2Client,
+    pageSize: 10,
+    fields: 'nextPageToken, files(id, name)',
+  }));
+  if (err) {
+    return console.log('The API returned an error: ' + err);
+  }
+  const files = res.data.files;
+  if (files.length) {
+    console.log('Files:');
+    files.map((file) => {
+      console.log(`${file.name} (${file.id})`);
+    });
+  } else {
+    console.log('No files found.');
   }
 
-  ctx.response.redirect(`${HOST}/welcome.html?from=google&access_token=${access_token}&scope=${scope}&token_type=${token_type}&expiry_date=${expiry_date}`);
+  ctx.response.redirect(
+      `${HOST}/welcome.html?from=google&access_token=${access_token}&scope=${scope}&token_type=${token_type}&expiry_date=${expiry_date}`);
 };
 
 app.use(main);
