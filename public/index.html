@@ -12,26 +12,12 @@
 <button id="login">Google Login</button>
 
 <script>
-  // // fill in your cliend_id
-  // const client_id = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com';
-  //
-  // const authorize_uri = 'https://accounts.google.com/o/oauth2/v2/auth';
-  // const redirect_uri = 'http://localhost:8080/oauth/redirect';
-  //
-  // const link = document.getElementById('login');
-  // // github scope
-  // // user repo gist admin:org
-  // link.href = `${authorize_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=user`;
-
   const HOST = 'https://simpletalkai.com/node-oauth-demo'
+  const oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
+  const clientId = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com'
+  const redirectUri = `${HOST}/oauth/redirect`
 
-  /*
- * Create form to request access token from Google's OAuth 2.0 server.
- */
   function oauthSignIn() {
-    // Google's OAuth 2.0 endpoint for requesting an access token
-    var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
-
     // Create <form> element to submit parameters to OAuth 2.0 endpoint.
     var form = document.createElement('form');
     form.setAttribute('method', 'GET'); // Send as a GET request.
@@ -39,12 +25,12 @@
 
     // Parameters to pass to OAuth 2.0 endpoint.
     var params = {
-      'client_id': '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com',
-      'redirect_uri': `${HOST}/oauth/redirect`,
+      'client_id': clientId,
+      'redirect_uri': redirectUri,
       'response_type': 'code',
       'scope': 'https://www.googleapis.com/auth/drive.metadata.readonly',
       'include_granted_scopes': 'true',
-      'state': 'pass-through value',
+      'state': '',
     };
 
     // Add form parameters as hidden input values.
