@@ -61,7 +61,7 @@ const oauthGoogle = async ctx => {
   const clientId = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com'
   const clientSecret = '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';
   const HOST = 'https://simpletalkai.com/node-oauth-demo'
-  const redirectUri = `${HOST}/oauth/redirect`
+  const redirectUri = `${HOST}/oauth/redirect-google`
 
   const oauth2Client = new google.auth.OAuth2(
       clientId,
@@ -106,7 +106,6 @@ const oauthGoogle = async ctx => {
   //   httpOnly: true,
   // });
   // ctx.response.redirect(`${HOST}/welcome.html?name=${name}&id=${id}`);
-
 
   // '=========== 使用SDK ==========='
   // code to token
