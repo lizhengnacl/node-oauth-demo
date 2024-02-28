@@ -32,7 +32,7 @@
     const redirectUri = `${HOST}/oauth/redirect-google`
     const scope = 'https://www.googleapis.com/auth/drive.metadata.readonly';
 
-    location.href = `${oauth2Endpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&include_granted_scopes=true&state=`;
+    location.href = `${oauth2Endpoint}?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&include_granted_scopes=true&state=`;
   }
 
   const githubBtn = document.getElementById('github');
