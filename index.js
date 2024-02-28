@@ -14,7 +14,7 @@ const colors = require('./util/colors');
 const app = new Koa();
 const main = serve(path.join(__dirname + '/public'));
 
-const HOST = 'http://localhost:8881/node-oauth-demo'
+const HOST = 'https://simpletalkai.com/node-oauth-demo'
 
 const oauth = async ctx => {
   const requestToken = ctx.request.query.code;
