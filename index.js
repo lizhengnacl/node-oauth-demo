@@ -80,7 +80,7 @@ const oauthGoogle = async ctx => {
   const tokenResponse = await axios({
     method: 'post',
     url: 'https://oauth2.googleapis.com/token?' +
-        `client_id=${clientID}&` +
+        `client_id=${clientId}&` +
         `client_secret=${clientSecret}&` +
         `code=${code}` +
         `redirect_uri=${redirectUri}` +
