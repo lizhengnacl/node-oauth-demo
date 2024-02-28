@@ -77,26 +77,24 @@ const oauthGoogle = async ctx => {
   console.log(colors.green(`authorization code: ${code}`));
 
   // '=========== 使用API ==========='
-  const tokenResponse = await axios({
-    method: 'post',
-    url: 'https://oauth2.googleapis.com/token?' +
-        `client_id=${clientId}&` +
-        `client_secret=${clientSecret}&` +
-        `code=${code}` +
-        `redirect_uri=${redirectUri}` +
-        `grant_type=authorization_code`,
-    headers: {
-      accept: 'application/json',
-    },
-  });
-
-  const accessToken = tokenResponse.data.access_token;
-  console.log(colors.green(`access token: ${accessToken}`));
-  ctx.response.redirect(
-      `${HOST}/welcome.html?from=google&access_token=${accessToken}`);
-
+  // const tokenResponse = await axios({
+  //   method: 'post',
+  //   url: 'https://oauth2.googleapis.com/token?' +
+  //       `client_id=${clientId}&` +
+  //       `client_secret=${clientSecret}&` +
+  //       `code=${code}` +
+  //       `redirect_uri=${redirectUri}` +
+  //       `grant_type=authorization_code`,
+  //   headers: {
+  //     accept: 'application/json',
+  //   },
+  // });
   //
-  //
+  // const accessToken = tokenResponse.data.access_token;
+  // console.log(colors.green(`access token: ${accessToken}`));
+  // ctx.response.redirect(
+  //     `${HOST}/welcome.html?from=google&access_token=${accessToken}`);
+
   // const result = await axios({
   //   method: 'get',
   //   url: `https://www.googleapis.com/oauth2/v1/userinfo`,
@@ -116,33 +114,33 @@ const oauthGoogle = async ctx => {
 
   // '=========== 使用SDK ==========='
   // code to token
-  // let {tokens} = await oauth2Client.getToken(code);
-  // oauth2Client.setCredentials(tokens);
-  // let {access_token, scope, token_type, expiry_date} = tokens;
-  //
-  // // 使用token，以Google云盘为例，其它参考文档
-  // const drive = google.drive('v3');
-  // let [err, res] = await to(drive.files.list({
-  //   auth: oauth2Client,
-  //   pageSize: 10,
-  //   fields: 'nextPageToken, files(id, name)',
-  // }));
-  // if (err) {
-  //   console.log('The API returned an error: ' + err);
-  // }else{
-  //   const files = res.data.files;
-  //   if (files.length) {
-  //     console.log('Files:');
-  //     files.map((file) => {
-  //       console.log(`${file.name} (${file.id})`);
-  //     });
-  //   } else {
-  //     console.log('No files found.');
-  //   }
-  //
-  // }
-  // ctx.response.redirect(
-  //     `${HOST}/welcome.html?from=google&access_token=${access_token}&scope=${scope}&token_type=${token_type}&expiry_date=${expiry_date}`);
+  let {tokens} = await oauth2Client.getToken(code);
+  oauth2Client.setCredentials(tokens);
+  let {access_token, scope, token_type, expiry_date} = tokens;
+
+  // 使用token，以Google云盘为例，其它参考文档
+  const drive = google.drive('v3');
+  let [err, res] = await to(drive.files.list({
+    auth: oauth2Client,
+    pageSize: 10,
+    fields: 'nextPageToken, files(id, name)',
+  }));
+  if (err) {
+    console.log('The API returned an error: ' + err);
+  }else{
+    const files = res.data.files;
+    if (files.length) {
+      console.log('Files:');
+      files.map((file) => {
+        console.log(`${file.name} (${file.id})`);
+      });
+    } else {
+      console.log('No files found.');
+    }
+
+  }
+  ctx.response.redirect(
+      `${HOST}/welcome.html?from=google&access_token=${access_token}&scope=${scope}&token_type=${token_type}&expiry_date=${expiry_date}`);
 };
 
 app.use(main);
