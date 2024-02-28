@@ -68,8 +68,23 @@ const oauth = async ctx => {
   console.log('=========== tokens ===========', tokens);
   let {access_token, scope, token_type, expiry_date} = tokens;
 
-  const userInfo = await oauth2Client.userinfo.get();
-  console.log(userInfo.data);
+  const drive = google.drive('v3');
+  drive.files.list({
+    auth: oauth2Client,
+    pageSize: 10,
+    fields: 'nextPageToken, files(id, name)',
+  }, (err1, res1) => {
+    if (err1) return console.log('The API returned an error: ' + err1);
+    const files = res1.data.files;
+    if (files.length) {
+      console.log('Files:');
+      files.map((file) => {
+        console.log(`${file.name} (${file.id})`);
+      });
+    } else {
+      console.log('No files found.');
+    }
+  });
 
   ctx.response.redirect(`${HOST}/welcome.html?access_token=${access_token}&scope=${scope}&token_type=${token_type}&expiry_date=${expiry_date}`);
 };
