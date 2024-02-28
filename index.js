@@ -44,7 +44,7 @@ const oauth = async ctx => {
   const name = result.data.name;
   const id = result.data.id;
 
-  ctx.cookies.set('myCookie', 'cookieValue', {
+  ctx.cookies.set('token', accessToken, {
     httpOnly: true,
   });
   ctx.response.redirect(`/welcome.html?name=${name}&id=${id}`);
