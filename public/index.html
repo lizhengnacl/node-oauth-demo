@@ -30,34 +30,9 @@
     const oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
     const clientId = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com'
     const redirectUri = `${HOST}/oauth/redirect-google`
+    const scope = 'https://www.googleapis.com/auth/drive.metadata.readonly';
 
-    // Create <form> element to submit parameters to OAuth 2.0 endpoint.
-    var form = document.createElement('form');
-    form.setAttribute('method', 'GET'); // Send as a GET request.
-    form.setAttribute('action', oauth2Endpoint);
-
-    // Parameters to pass to OAuth 2.0 endpoint.
-    var params = {
-      'client_id': clientId,
-      'redirect_uri': redirectUri,
-      'response_type': 'code',
-      'scope': 'https://www.googleapis.com/auth/drive.metadata.readonly',
-      'include_granted_scopes': 'true',
-      'state': '',
-    };
-
-    // Add form parameters as hidden input values.
-    for (var p in params) {
-      var input = document.createElement('input');
-      input.setAttribute('type', 'hidden');
-      input.setAttribute('name', p);
-      input.setAttribute('value', params[p]);
-      form.appendChild(input);
-    }
-
-    // Add form to page and submit it to open the OAuth 2.0 endpoint.
-    document.body.appendChild(form);
-    form.submit();
+    location.href = `${oauth2Endpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&include_granted_scopes=true&state=`;
   }
 
   const githubBtn = document.getElementById('github');
