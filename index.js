@@ -12,8 +12,9 @@ const axios = require('axios');
 const colors = require('./util/colors');
 
 const app = new Koa();
-
 const main = serve(path.join(__dirname + '/public'));
+
+const HOST = 'https://simpletalkai.com/node-oauth-demo'
 
 const oauth = async ctx => {
   const requestToken = ctx.request.query.code;
@@ -57,7 +58,7 @@ const oauth = async ctx => {
   ctx.cookies.set('token', accessToken, {
     httpOnly: true,
   });
-  ctx.response.redirect(`/welcome.html?name=${name}&id=${id}`);
+  ctx.response.redirect(`${HOST}/welcome.html?name=${name}&id=${id}`);
 };
 
 app.use(main);
