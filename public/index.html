@@ -2,27 +2,75 @@
 <html>
 
 <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Node OAuth2 Demo</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Node OAuth2 Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-        <a id="login">Login with GitHub</a>
+<button id="github">Login with GitHub</button>
+<br>
+<button id="google">Login with Google</button>
 
 <script>
-  // fill in your cliend_id
-  const client_id = '240beeadb32b08f2fcb5';
-  const HOST = 'https://simpletalkai.com/node-oauth-demo'
+  function LoginWithGitHub() {
+    const client_id = '240beeadb32b08f2fcb5';
+    const HOST = 'https://simpletalkai.com/node-oauth-demo';
+    const authorize_uri = 'https://github.com/login/oauth/authorize';
+    const redirect_uri = `${HOST}/oauth/redirect`;
+    // github scope
+    // user repo gist admin:org
+    const scope = 'user'
+    location.href = `${authorize_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`;
+  }
 
-  const authorize_uri = 'https://github.com/login/oauth/authorize';
-  const redirect_uri = `${HOST}/oauth/redirect`;
+  function LoginWithGoogle() {
+    const HOST = 'https://simpletalkai.com/node-oauth-demo'
+    const oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
+    const clientId = '953479267209-31r63sb2gbln6vm8lnoumf3bpd0jcjl4.apps.googleusercontent.com'
+    const redirectUri = `${HOST}/oauth/redirect-google`
 
-  const link = document.getElementById('login');
-  // github scope
-  // user repo gist admin:org
-  link.href = `${authorize_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=user`;
+    // Create <form> element to submit parameters to OAuth 2.0 endpoint.
+    var form = document.createElement('form');
+    form.setAttribute('method', 'GET'); // Send as a GET request.
+    form.setAttribute('action', oauth2Endpoint);
+
+    // Parameters to pass to OAuth 2.0 endpoint.
+    var params = {
+      'client_id': clientId,
+      'redirect_uri': redirectUri,
+      'response_type': 'code',
+      'scope': 'https://www.googleapis.com/auth/drive.metadata.readonly',
+      'include_granted_scopes': 'true',
+      'state': '',
+    };
+
+    // Add form parameters as hidden input values.
+    for (var p in params) {
+      var input = document.createElement('input');
+      input.setAttribute('type', 'hidden');
+      input.setAttribute('name', p);
+      input.setAttribute('value', params[p]);
+      form.appendChild(input);
+    }
+
+    // Add form to page and submit it to open the OAuth 2.0 endpoint.
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  const githubBtn = document.getElementById('github');
+  githubBtn.addEventListener('click', () => {
+    LoginWithGitHub();
+  });
+
+  const googleBtn = document.getElementById('google');
+  googleBtn.addEventListener('click', () => {
+    LoginWithGoogle();
+  });
+
+
 </script>
 
 </body>
